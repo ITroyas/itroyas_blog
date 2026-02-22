@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_head %}
+    {% endblock %}  {# сюда страницы добавляют свой CSS/JS #}
+</head>
+<body>
+
+{% block header %}
+<header>
+    <div class="header-inner">
+        <a href="/" class="logo">
+            <span class="prompt">troyas</span><span class="at">@</span><span class="path">blog</span>
+        </a>
+        <nav>
+            <a href="/">./home</a>
+            <a href="/admin" class="admin-link">./admin</a>
+        </nav>
+    </div>
+</header>
+{% endblock %}
+
+<main>
+    {% block content %}
+    {% endblock %}  {# сюда каждая страница вставляет своё #}
+</main>
+
+<footer>
+    © 2026<span style="color:var(--green)"> {{ config['BLOG_TITLE'] }}</span><br> <span>{{ config['BLOG_DESC'] }}</span>
+</footer>
+
+{% block extra_scripts %}
+{% endblock %}  {# JS в конце страницы #}
+</body>
+</html>

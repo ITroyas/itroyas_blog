@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ config['BLOG_TITLE'] }} — {{ config['BLOG_SUBTITLE'] }}{% endblock %}
+
+
+{% block content %}
+<div class="hero">
+    <div class="comment"># {{ config['BLOG_SUBTITLE'] }}</div>
+    <h1><span>></span> {{ config['BLOG_TITLE'] }}</h1>
+    <p class="hero-desc">Linux, MacOS, Windows, DevOps и прочие штуки</p>
+    <div class="stats-bar">
+        <span><span class="stat-label">posts:</span>{{ posts.total }}</span>
+        {% if tag %}<span><span class="stat-label">filter:</span>#{{ tag }}</span>{% endif %}
+    </div>
+</div>
+
+<div class="posts-grid">
+    {% if posts.items %}
+        {% for post in posts.items %}
+        <article class="post-card">
+            <div class="post-card-meta">
+                <span class="date">{{ post.created_at.strftime('%Y-%m-%d') }}</span>
+                {% if post.tag_list() %}
+                <div class="tags">
+                    {% for t in post.tag_list() %}
+                    <a href="/?tag={{ t }}" class="tag">#{{ t }}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <h2><a href="/post/{{ post.slug }}">{{ post.title }}</a></h2>
+            {% if post.excerpt %}
+            <p>{{ post.excerpt }}</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    {% else %}
+        <div style="color:var(--text-dim); padding: 3rem 0; text-align:center;">
+            <div style="font-size:2rem; margin-bottom:1rem;">_</div>
+            <p>Постов пока нет. <a href="/admin/post/new">Написать первый?</a></p>
+        </div>
+    {% endif %}
+</div>
+
+{% if posts.pages > 1 %}
+<div class="pagination">
+    {% if posts.has_prev %}
+    <a href="?page={{ posts.prev_num }}{% if tag %}&tag={{ tag }}{% endif %}">&lt; prev</a>
+    {% endif %}
+    {% for p in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+            {% if p == posts.page %}
+            <span class="current">{{ p }}</span>
+            {% else %}
+            <a href="?page={{ p }}{% if tag %}&tag={{ tag }}{% endif %}">{{ p }}</a>
+            {% endif %}
+        {% else %}
+        <span>…</span>
+        {% endif %}
+    {% endfor %}
+    {% if posts.has_next %}
+    <a href="?page={{ posts.next_num }}{% if tag %}&tag={{ tag }}{% endif %}">next &gt;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

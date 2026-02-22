@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin{% endblock %} — {{ config['BLOG_TITLE'] }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="admin-body">
+
+<div class="admin-topbar">
+    <span class="brand">root@{{ config['BLOG_TITLE'] }}:/admin{% block topbar_path %}{% endblock %}</span>
+    <nav>
+        <a href="/">← блог</a>
+        <a href="/admin/post/new" style="color:var(--green);">+ новый пост</a>
+        <a href="/admin/logout" style="color:var(--red);">./logout</a>
+    </nav>
+</div>
+
+<div class="admin-container">
+    {# флеш-сообщения — один раз здесь #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for cat, msg in messages %}
+        <div class="flash {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+{% block extra_scripts %}
+{% endblock %}
+</body>
+</html>

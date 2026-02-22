@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+    <!-- Highlight.js для подсветки кода -->
+    {% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    {% endblock %}
+
+{% block content %}
+<main>
+<article>
+    <div class="post-header">
+        <a href="/" class="back-link">← назад</a>
+        <h1>{{ post.title }}</h1>
+        <div class="post-meta">
+            <span>{{ post.created_at.strftime('%d %B %Y') }}</span>
+            {% if post.updated_at != post.created_at %}
+            <span>Обновлено: {{ post.updated_at.strftime('%d.%m.%Y') }}</span>
+            {% endif %}
+            {% if post.tag_list() %}
+            <div class="tags">
+                {% for t in post.tag_list() %}
+                <a href="/?tag={{ t }}" class="tag">#{{ t }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="post-body">
+        {{ post.content | safe }}
+    </div>
+</article>
+</main>
+
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // 1. Подсветка синтаксиса
+    document.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+    });
+
+    // 2. Лейбл языка
+    document.querySelectorAll('pre[class*="language-"]').forEach(pre => {
+        const cls = [...pre.classList].find(c => c.startsWith('language-'));
+        if (cls) {
+            const lang = cls.replace('language-', '');
+            pre.setAttribute('data-language', lang);
+        }
+    });
+
+    // 3. Кнопка копировать — после hljs, чтобы DOM уже был готов
+    document.querySelectorAll('.post-body pre').forEach(pre => {
+        pre.style.position = 'relative';
+
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = '⎘ copy';
+        pre.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            const code = pre.querySelector('code');
+            // textContent надёжнее чем innerText после hljs
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                btn.textContent = '✓ copied';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '⎘ copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                // Fallback если clipboard API недоступен (http без ssl)
+                const ta = document.createElement('textarea');
+                ta.value = code.textContent;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.textContent = '✓ copied';
+                setTimeout(() => btn.textContent = '⎘ copy', 2000);
+            });
+        });
+    });
+
+});
+</script>
+{% endblock %}
+
