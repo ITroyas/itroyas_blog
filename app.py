@@ -198,6 +198,9 @@ def admin_upload():
         return jsonify({'location': url})
     return jsonify({'error': 'File not allowed'}), 400
 
+with app.app_context():
+    db.create_all()
+
 
 #8 march
 @app.route('/eight_march')
