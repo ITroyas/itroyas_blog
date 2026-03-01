@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Открытка 8 марта</title>
+  <link rel="stylesheet" href="/static/css/march.css">
+</head>
+<body>
+
+  <!-- Вся страница -->
+  <div class="page">
+
+    <!-- Левая колонка — превью открытки -->
+    <div class="col-preview">
+      <div class="card" id="card-preview">
+
+        <!-- Левая часть открытки -->
+        <div class="card-left">
+          <p class="card-holiday">С Праздником!</p>
+          <p class="card-date">8 МАРТА</p>
+          <p class="card-emoji" id="preview-emoji">🌸</p>
+        </div>
+
+        <!-- Правая часть открытки -->
+        <div class="card-right">
+          <p class="card-to-label">Дорогая(-ой),</p>
+          <p class="card-to" id="preview-to">Имя</p>
+          <p class="card-message" id="preview-msg">Текст поздравления</p>
+          <p class="card-from-label">С любовью,</p>
+          <p class="card-from" id="preview-from">Имя</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Правая колонка — панель управления -->
+    <div class="col-controls">
+
+      <!-- Шаблоны -->
+      <div class="section">
+        <p class="section-label">Шаблон</p>
+        <div class="templates-grid">
+          <div class="tpl-thumb active" data-tpl="bloom">Роза</div>
+          <div class="tpl-thumb" data-tpl="garden">Сад</div>
+          <div class="tpl-thumb" data-tpl="night">Ночь</div>
+          <div class="tpl-thumb" data-tpl="gold">Золото</div>
+          <div class="tpl-thumb" data-tpl="code">Code</div>
+          <div class="tpl-thumb" data-tpl="matrix">Matrix</div>
+        </div>
+        <p class="section-label">Сообщение</p>
+        <div class="quick-texts">
+        <p class="section-label" style="margin-top:4px">Маме</p>
+        <button class="quick-btn" data-to="Мама" data-msg="Ты — моя опора и вдохновение. Спасибо за всё, что ты делаешь. С праздником, мамочка!">💐 Тёплое</button>
+        <button class="quick-btn" data-to="Мама" data-msg="За твои объятия, советы и бесконечную любовь — огромное спасибо. С 8 марта!">❤️ Нежное</button>
+
+        <p class="section-label" style="margin-top:4px">Бабушке</p>
+        <button class="quick-btn" data-to="Бабушка" data-msg="Ты — самая мудрая и добрая. Твоя любовь согревает нас всегда. С праздником!">🌷 Душевное</button>
+        <button class="quick-btn" data-to="Бабушка" data-msg="Бабулечка, ты лучшая на свете! Желаю здоровья, тепла и радости. С 8 марта!">🌸 Ласковое</button>
+
+        <p class="section-label" style="margin-top:4px">Девушке</p>
+        <button class="quick-btn" data-to="Любимая" data-msg="Ты делаешь каждый день особенным. Люблю тебя больше всего на свете. С праздником!">💝 Романтичное</button>
+        <button class="quick-btn" data-to="Любимая" data-msg="С тобой даже обычный день становится праздником. С 8 марта, моя любовь!">✨ Поэтичное</button>
+
+        <p class="section-label" style="margin-top:4px">Айтишнице</p>
+        <button class="quick-btn" data-to="Коллега" data-msg="Ты не просто пишешь код — ты создаёшь миры. С 8 марта, разработчица!">👩‍💻 Про код</button>
+        <button class="quick-btn" data-to="Коллега" data-msg="Git commit: добавила в мою жизнь радость и вдохновение. С праздником!">🚀 Git commit</button>
+        </div>
+      </div>
+
+      <!-- Украшения -->
+      <div class="section">
+        <p class="section-label">Украшения</p>
+        <div class="emoji-grid">
+          <button class="emoji-btn" data-e="🌸">🌸</button>
+          <button class="emoji-btn" data-e="🌹">🌹</button>
+          <button class="emoji-btn" data-e="🌷">🌷</button>
+          <button class="emoji-btn" data-e="💐">💐</button>
+          <button class="emoji-btn" data-e="✨">✨</button>
+          <button class="emoji-btn" data-e="🦋">🦋</button>
+          <button class="emoji-btn" data-e="💝">💝</button>
+          <button class="emoji-btn" data-e="🎀">🎀</button>
+          <button class="emoji-btn" data-e="💻">💻</button>
+            <button class="emoji-btn" data-e="⌨️">⌨️</button>
+            <button class="emoji-btn" data-e="🖥️">🖥️</button>
+            <button class="emoji-btn" data-e="👩‍💻">👩‍💻</button>
+            <button class="emoji-btn" data-e="🐛">🐛</button>
+            <button class="emoji-btn" data-e="☕">☕</button>
+            <button class="emoji-btn" data-e="🚀">🚀</button>
+            <button class="emoji-btn" data-e="⚡">⚡</button>
+        </div>
+        <button class="emoji-clear">Очистить</button>
+      </div>
+
+      <!-- Текст открытки -->
+      <div class="section">
+        <p class="section-label">Текст открытки</p>
+        <div class="inputs-row">
+          <div class="field">
+            <label for="inp-to">Кому</label>
+            <input type="text" id="inp-to" placeholder="Маме">
+          </div>
+          <div class="field">
+            <label for="inp-from">От кого</label>
+            <input type="text" id="inp-from" placeholder="Твоя дочь">
+          </div>
+        </div>
+        <div class="field">
+          <label for="inp-msg">Сообщение</label>
+          <textarea id="inp-msg" rows="3" placeholder="Напиши тёплые слова..."></textarea>
+        </div>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="actions">
+        <button class="btn-save" id="btn-save">Сохранить</button>
+        <button class="btn-share" id="btn-share">Поделиться</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    // ===== ПЕРЕМЕННЫЕ =====
+let selectedEmoji = [];
+let currentTpl = 'bloom';
+
+// Настройки каждого шаблона — фон открытки и цвета текста
+const templates = {
+  bloom: {
+    background: 'linear-gradient(135deg, #f8ede8 0%, #e8bfba 100%)',
+    colorMain: '#a85550',
+    colorText: '#6b4040',
+    colorFaint: '#8b3a3a',
+    divider: 'rgba(180,100,90,0.3)',
+  },
+  garden: {
+    background: 'linear-gradient(135deg, #e8f0e7 0%, #c5dfc2 100%)',
+    colorMain: '#3d6b38',
+    colorText: '#3d5c3a',
+    colorFaint: '#2a4a26',
+    divider: 'rgba(80,140,80,0.3)',
+  },
+  night: {
+    background: 'linear-gradient(135deg, #2a1f2e 0%, #4a3050 100%)',
+    colorMain: '#e8c88a',
+    colorText: '#d4b8d8',
+    colorFaint: '#e8d4ec',
+    divider: 'rgba(200,169,110,0.3)',
+  },
+  gold: {
+    background: 'linear-gradient(135deg, #fdf5e6 0%, #ecd9a8 100%)',
+    colorMain: '#b8861a',
+    colorText: '#6b5020',
+    colorFaint: '#8b6018',
+    divider: 'rgba(180,140,40,0.3)',
+  },
+  code: {
+    background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
+    colorMain: '#58d68d',
+    colorText: '#8b949e',
+    colorFaint: '#58d68d',
+    divider: 'rgba(88,214,141,0.3)',
+},
+  matrix: {
+    background: 'linear-gradient(135deg, #0a0a0a 0%, #0d2818 100%)',
+    colorMain: '#00ff41',
+    colorText: '#00cc33',
+    colorFaint: '#00ff41',
+    divider: 'rgba(0,255,65,0.3)',
+},
+};
+
+// ===== БЫСТРЫЕ ТЕКСТЫ =====
+document.querySelectorAll('.quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.to) {
+      document.getElementById('inp-to').value = btn.dataset.to;
+    }
+    document.getElementById('inp-msg').value = btn.dataset.msg;
+    updateCard();
+  });
+});
+
+// ===== ПРИМЕНИТЬ ШАБЛОН =====
+function applyTemplate(tplName) {
+  const tpl = templates[tplName];
+  const card = document.getElementById('card-preview');
+
+  // Меняем фон
+  card.style.background = tpl.background;
+
+  // Меняем цвета текста внутри открытки
+  card.querySelectorAll('.card-date').forEach(el => el.style.color = tpl.colorMain);
+  card.querySelectorAll('.card-holiday, .card-message, .card-to-label, .card-from-label').forEach(el => el.style.color = tpl.colorText);
+  card.querySelectorAll('.card-to, .card-from').forEach(el => el.style.color = tpl.colorFaint);
+
+  // Меняем разделитель если есть
+  const divider = card.querySelector('.card-divider');
+  if (divider) divider.style.borderColor = tpl.divider;
+}
+
+// ===== ОБНОВИТЬ ТЕКСТ ОТКРЫТКИ =====
+function updateCard() {
+  const to = document.getElementById('inp-to').value.trim();
+  const from = document.getElementById('inp-from').value.trim();
+  const msg = document.getElementById('inp-msg').value.trim();
+
+  document.getElementById('preview-to').textContent = to || 'Имя';
+  document.getElementById('preview-from').textContent = from || 'Имя';
+  document.getElementById('preview-msg').textContent = msg || 'Текст поздравления';
+  document.getElementById('preview-emoji').textContent = selectedEmoji.join(' ') || '';
+}
+
+// ===== ВЫБОР ШАБЛОНА =====
+document.querySelectorAll('.tpl-thumb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Убираем active у всех
+    document.querySelectorAll('.tpl-thumb').forEach(b => b.classList.remove('active'));
+    // Ставим active на нажатый
+    btn.classList.add('active');
+    // Запоминаем и применяем
+    currentTpl = btn.dataset.tpl;
+    applyTemplate(currentTpl);
+  });
+});
+
+// ===== ВЫБОР ЭМОДЗИ =====
+document.querySelectorAll('.emoji-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const e = btn.dataset.e;
+
+    if (btn.classList.contains('selected')) {
+      // Убираем если уже выбран
+      btn.classList.remove('selected');
+      selectedEmoji = selectedEmoji.filter(x => x !== e);
+    } else {
+      // Добавляем
+      btn.classList.add('selected');
+      selectedEmoji.push(e);
+    }
+
+    updateCard();
+  });
+});
+
+// Кнопка очистить
+document.querySelector('.emoji-clear').addEventListener('click', () => {
+  selectedEmoji = [];
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  updateCard();
+});
+
+// ===== ПОЛЯ ВВОДА =====
+document.getElementById('inp-to').addEventListener('input', updateCard);
+document.getElementById('inp-from').addEventListener('input', updateCard);
+document.getElementById('inp-msg').addEventListener('input', updateCard);
+
+// ===== РЕНДЕР ОТКРЫТКИ =====
+async function renderCard() {
+  const card = document.getElementById('card-preview');
+  const rect = card.getBoundingClientRect();
+
+  card.style.boxShadow = 'none';
+  card.style.borderRadius = '0';
+
+  const fullCanvas = await html2canvas(document.body, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: null,
+    x: rect.left + window.scrollX,
+    y: rect.top + window.scrollY,
+    width: rect.width,
+    height: rect.height,
+    scrollX: -window.scrollX,
+    scrollY: -window.scrollY,
+  });
+
+  card.style.boxShadow = '';
+  card.style.borderRadius = '';
+
+  return fullCanvas;
+}
+
+// ===== СОХРАНИТЬ =====
+document.getElementById('btn-save').addEventListener('click', async () => {
+  try {
+    const canvas = await renderCard();
+    const link = document.createElement('a');
+    link.download = '8march.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch (e) {
+    alert('Не удалось сохранить. Попробуй ещё раз.');
+  }
+});
+
+// ===== ПОДЕЛИТЬСЯ =====
+document.getElementById('btn-share').addEventListener('click', async () => {
+  const card = document.getElementById('card-preview');
+
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+    });
+
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], '8march.png', { type: 'image/png' });
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
+        // МОБИЛКА — нативное меню "Поделиться"
+        await navigator.share({
+          title: 'С 8 Марта!',
+          files: [file],
+        });
+
+      } else {
+        // ПК — копируем в буфер обмена
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          alert('Скопировано! Вставь картинку в Telegram или любой мессенджер через Ctrl+V');
+        } else {
+          // Совсем старый браузер — просто скачиваем
+          const link = document.createElement('a');
+          link.download = '8march.png';
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          alert('Картинка сохранена — отправь её вручную в мессенджере');
+        }
+      }
+
+    }, 'image/png');
+
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      alert('Что-то пошло не так. Попробуй кнопку Сохранить.');
+    }
+  }
+});
+
+// ===== СТАРТ =====
+// Применяем дефолтный шаблон когда страница загрузилась
+applyTemplate(currentTpl);
+  </script>
+
+</body>
+</html>

@@ -199,6 +199,13 @@ def admin_upload():
     return jsonify({'error': 'File not allowed'}), 400
 
 
+#8 march
+@app.route('/eight_march')
+def eight_march():
+    return render_template('eight_march.html')
+
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

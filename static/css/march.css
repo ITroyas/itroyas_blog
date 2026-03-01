@@ -1,0 +1,432 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Georgia', serif;
+  background: #f6d7ff;
+  color: #3a2e2e;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* ===== СЕТКА СТРАНИЦЫ ===== */
+.page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  width: 100%;
+  max-width: 1900px;
+  align-items: start;
+}
+
+/* ===== ОТКРЫТКА ===== */
+.col-preview {
+  position: sticky;
+  top: 40px;
+}
+
+.card {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(250, 178, 240, 0.6);
+
+  /* дефолтный фон — потом будем менять через классы */
+  background: linear-gradient(135deg, #d8beb2 20%, #e8bfba 100%);
+}
+
+/* Левая часть открытки */
+.card-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  gap: 12px;
+  border-right: 1px dashed rgba(70, 70, 70, 0.5);
+}
+
+/* Правая часть открытки */
+.card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 30px 24px;
+  gap: 8px;
+}
+
+/* ===== ТЕКСТ ОТКРЫТКИ ===== */
+.card-holiday {
+  font-size: clamp(0.7rem, 1.5vw, 1.2rem);
+  font-style: italic;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.card-date {
+  font-size: clamp(1.8rem, 4vw, 4rem);
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.card-emoji {
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  text-align: center;
+  letter-spacing: 0.1em;
+  min-height: 2rem;
+}
+
+.card-to-label {
+  font-size: clamp(0.55rem, 1vw, 0.75rem);
+  opacity: 0.6;
+  letter-spacing: 0.1em;
+}
+
+.card-to {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-style: italic;
+  font-weight: bold;
+}
+
+.card-message {
+  font-size: clamp(0.55rem, 1vw, 0.75rem);
+  line-height: 1.6;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+.card-from-label {
+  font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+  opacity: 0.55;
+  margin-top: 8px;
+  letter-spacing: 0.1em;
+}
+
+.card-from {
+  font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+  font-style: italic;
+}
+
+/* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ===== */
+.col-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #757474;
+}
+
+/* ===== ШАБЛОНЫ ===== */
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 3vh;
+}
+
+.tpl-thumb {
+  aspect-ratio: 16/9;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.55rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  transition: all 0.2s;
+}
+
+.tpl-thumb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(58,46,46,0.2);
+}
+
+.tpl-thumb.active {
+  border-color: #c9726e;
+  box-shadow: 0 0 0 1px #c9726e;
+}
+
+/* Цвета превьюшек шаблонов */
+.tpl-thumb[data-tpl="bloom"] {
+  background: linear-gradient(135deg, #f8ede8, #e8bfba);
+  color: rgba(80,40,40,0.7);
+}
+.tpl-thumb[data-tpl="garden"] {
+  background: linear-gradient(135deg, #e8f0e7, #c5dfc2);
+  color: rgba(40,70,40,0.7);
+}
+.tpl-thumb[data-tpl="night"] {
+  background: linear-gradient(135deg, #2a1f2e, #4a3050);
+  color: rgba(220,200,240,0.8);
+}
+.tpl-thumb[data-tpl="gold"] {
+  background: linear-gradient(135deg, #fdf5e6, #ecd9a8);
+  color: rgba(100,70,20,0.7);
+}
+.tpl-thumb[data-tpl="code"] {
+  background: linear-gradient(135deg, #0d1117, #161b22);
+  color: rgba(88,214,141,0.9);
+}
+.tpl-thumb[data-tpl="matrix"] {
+  background: linear-gradient(135deg, #0a0a0a, #0d2818);
+  color: rgba(0,255,65,0.9);
+}
+
+/* ===== УКРАШЕНИЯ ===== */
+.emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.emoji-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 1.3rem;
+  background: white;
+  border: 1.5px solid #e8ddd8;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.emoji-btn:hover {
+  transform: scale(1.15);
+  border-color: #e8a8a0;
+}
+
+.emoji-btn.selected {
+  border-color: #c9726e;
+  background: #fff0ee;
+  box-shadow: 0 0 0 1px #c9726e;
+}
+
+.emoji-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.65rem;
+  color: #9a8a84;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  align-self: flex-start;
+  font-family: inherit;
+}
+
+
+/* ===== БЫСТРЫЕ ТЕКСТЫ ===== */
+.quick-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.quick-btn {
+  background: white;
+  border: 1px solid #e0d5cf;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  color: #3a2e2e;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+
+.quick-btn:hover {
+  border-color: #c9726e;
+  color: #c9726e;
+  background: #fff8f7;
+}
+
+/* ===== ПОЛЯ ВВОДА ===== */
+.inputs-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #9a8a84;
+}
+
+.field input,
+.field textarea {
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #3a2e2e;
+  background: white;
+  border: 1px solid #e0d5cf;
+  border-radius: 4px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #c9726e;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #ccc0ba;
+}
+
+/* ===== КНОПКИ ===== */
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-save,
+.btn-share {
+  padding: 14px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-save {
+  background: #3a2e2e;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #c9726e;
+  transform: translateY(-1px);
+}
+
+.btn-share {
+  background: white;
+  color: #3a2e2e;
+  border: 1.5px solid #e0d5cf;
+}
+
+.btn-share:hover {
+  border-color: #c9726e;
+  color: #c9726e;
+  transform: translateY(-1px);
+}
+
+/* ===== АДАПТИВ ===== */
+@media (max-width: 768px) {
+
+  body {
+    padding: 20px 16px 60px;
+    align-items: flex-start;
+  }
+
+  /* Колонки становятся строками */
+  .page {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  /* Открытка перестаёт быть sticky */
+  .col-preview {
+    position: static;
+  }
+
+  /* Открытка — чуть меньше на телефоне */
+  .card {
+    aspect-ratio: 4/3;
+  }
+
+  /* Шаблоны — 4 в ряд оставляем, просто мельче */
+  .templates-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Кнопки — одна под другой */
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  /* На совсем маленьких — открытка вертикальная */
+  .card {
+    aspect-ratio: 3/4;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .card-left {
+    border-right: none;
+    border-bottom: 1px dashed rgba(70, 70, 70, 0.5);
+    padding: 20px;
+  }
+
+  .card-right {
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Кому/от кого — одно под другим */
+  .inputs-row {
+    grid-template-columns: 1fr;
+  }
+
+}
+
