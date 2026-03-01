@@ -1,0 +1,40 @@
+services:
+
+  blog:
+    build: .
+    container_name: blog_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - blog_db:/app/blog.db
+      - blog_uploads:/app/static/uploads
+      - ./templates:/app/templates
+      - ./static/css:/app/static/css
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:alpine
+    container_name: blog_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/blog.conf:/etc/nginx/conf.d/blog.conf:ro
+      - blog_uploads:/app/static/uploads:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+    networks:
+      - internal
+    depends_on:
+      - blog
+
+volumes:
+  blog_db:
+  blog_uploads:
+
+networks:
+  internal:
