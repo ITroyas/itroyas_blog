@@ -261,40 +261,14 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  const width = card.offsetWidth;
-  const height = card.offsetHeight;
 
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
 
   const canvas = await html2canvas(card, {
-    scale: window.devicePixelRatio || 2,
+    scale: 2,
     useCORS: true,
     backgroundColor: null,
-    logging: false,
-    width: width,
-    height: height,
-    scrollX: 0,
-    scrollY: 0,
-    onclone: (clonedDoc) => {
-      const clonedCard = clonedDoc.getElementById('card-preview');
-      clonedCard.style.position = 'absolute';
-      clonedCard.style.top = '0';
-      clonedCard.style.left = '0';
-      clonedCard.style.margin = '0';
-      clonedCard.style.padding = '0';
-      clonedCard.style.borderRadius = '0';
-      clonedCard.style.boxShadow = 'none';
-      clonedCard.style.width = width + 'px';
-      clonedCard.style.height = height + 'px';
-      clonedCard.style.transform = 'none';
-      // Убираем sticky у родителя
-      const parent = clonedCard.closest('.col-preview');
-      if (parent) {
-        parent.style.position = 'static';
-        parent.style.transform = 'none';
-      }
-    }
   });
 
   card.style.boxShadow = '';
