@@ -265,9 +265,17 @@ async function renderCard() {
   const canvas = await html2canvas(card, {
     useCORS: true,
     allowTaint: false,
-    scale: 2, // качество 2x
+    scale: 2,
     backgroundColor: null,
     logging: false,
+    width: card.offsetWidth,
+    height: card.offsetHeight,
+    x: 0,
+    y: 0,
+    scrollX: -window.scrollX,
+    scrollY: -window.scrollY,
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
   });
 
   return canvas;
