@@ -120,8 +120,8 @@
     </div>
   </div>
 
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script> -->
   <script>
     // ===== ПЕРЕМЕННЫЕ =====
 let selectedEmoji = [];
@@ -262,34 +262,15 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 async function renderCard() {
   const card = document.getElementById('card-preview');
 
-  card.style.boxShadow = 'none';
-  card.style.borderRadius = '0';
-
-  const blob = await domtoimage.toBlob(card, {
-    width: card.offsetWidth,
-    height: card.offsetHeight,
-    quality: 1,
+  const canvas = await html2canvas(card, {
+    useCORS: true,
+    allowTaint: false,
+    scale: 2, // качество 2x
+    backgroundColor: null,
+    logging: false,
   });
 
-  card.style.boxShadow = '';
-  card.style.borderRadius = '';
-
-  // Возвращаем объект с blob и методом toDataURL
-  const url = URL.createObjectURL(blob);
-  const img = new Image();
-
-  return new Promise((resolve) => {
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = card.offsetWidth;
-      canvas.height = card.offsetHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-      resolve(canvas);
-    };
-    img.src = url;
-  });
+  return canvas;
 }
 
   // ===== СОХРАНИТЬ =====
