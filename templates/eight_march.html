@@ -261,6 +261,10 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 async function renderCard() {
   const card = document.getElementById('card-preview');
 
+  console.log('card size:', card.offsetWidth, card.offsetHeight);
+  console.log('card background:', card.style.background);
+  console.log('card rect:', JSON.stringify(card.getBoundingClientRect()));
+
   // Скроллим к карточке
   card.scrollIntoView({ behavior: 'instant', block: 'start' });
   
