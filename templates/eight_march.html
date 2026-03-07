@@ -261,33 +261,25 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  
+
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
 
-  const dataUrl = await domtoimage.toPng(card, {
-    width: card.offsetWidth,
-    height: card.offsetHeight,
-    quality: 1,
+  // Скроллим к карточке
+  card.scrollIntoView();
+  await new Promise(r => setTimeout(r, 100));
+
+  const canvas = await html2canvas(card, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: null,
+    logging: false,
   });
 
   card.style.boxShadow = '';
   card.style.borderRadius = '';
 
-  // Возвращаем canvas для совместимости
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = card.offsetWidth * 2;
-      canvas.height = card.offsetHeight * 2;
-      const ctx = canvas.getContext('2d');
-      ctx.scale(2, 2);
-      ctx.drawImage(img, 0, 0);
-      resolve(canvas);
-    };
-    img.src = dataUrl;
-  });
+  return canvas;
 }
 
 // ===== ПОДЕЛИТЬСЯ =====
