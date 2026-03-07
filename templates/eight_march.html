@@ -258,35 +258,32 @@ document.getElementById('inp-from').addEventListener('input', updateCard);
 document.getElementById('inp-msg').addEventListener('input', updateCard);
 
   // ===== РЕНДЕР КАРТИНКИ ЧЕРЕЗ CANVAS =====
-async function renderCardCanvas() {
+async function renderCard() {
   const card = document.getElementById('card-preview');
+  const rect = card.getBoundingClientRect();
+
+  card.style.boxShadow = 'none';
+  card.style.borderRadius = '0';
 
   const canvas = await html2canvas(card, {
-    backgroundColor: null,
     scale: 2,
     useCORS: true,
+    backgroundColor: null,
     logging: false,
-    onclone: (clonedDoc) => {
-      const clonedBody = clonedDoc.body;
-      const clonedCard = clonedDoc.getElementById('card-preview');
-
-      // Убираем всё лишнее — оставляем только карточку
-      clonedBody.style.background = 'transparent';
-      clonedBody.style.padding = '0';
-      clonedBody.style.margin = '0';
-      clonedBody.style.display = 'block';
-
-      clonedCard.style.position = 'static';
-      clonedCard.style.margin = '0';
-      clonedCard.style.boxShadow = 'none';
-      clonedCard.style.borderRadius = '0';
-      clonedCard.style.border = 'none';
-      clonedCard.style.width = card.offsetWidth + 'px';
-      clonedCard.style.height = card.offsetHeight + 'px';
-    }
+    x: 0,
+    y: 0,
+    scrollX: 0,
+    scrollY: 0,
+    width: rect.width,
+    height: rect.height,
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
   });
 
-  return canvas.toDataURL('image/png');
+  card.style.boxShadow = '';
+  card.style.borderRadius = '';
+
+  return canvas;
 }
 
   // ===== СОХРАНЕНИЕ КАРТИНКИ =====
