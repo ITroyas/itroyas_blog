@@ -262,15 +262,15 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 async function renderCard() {
   const card = document.getElementById('card-preview');
 
-  // Запоминаем позицию скролла
+  // Запоминаем текущий скролл
   const scrollX = window.scrollX;
   const scrollY = window.scrollY;
 
-  // Скроллим к карточке
-  card.scrollIntoView({ block: 'start' });
-  
-  // Небольшая пауза чтобы скролл успел отработать
-  await new Promise(resolve => setTimeout(resolve, 100));
+  // Скроллим наверх
+  window.scrollTo(0, 0);
+
+  // Ждём пока браузер применит скролл
+  await new Promise(r => setTimeout(r, 100));
 
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
@@ -280,8 +280,6 @@ async function renderCard() {
     useCORS: true,
     backgroundColor: null,
     logging: false,
-    scrollX: 0,
-    scrollY: 0,
   });
 
   card.style.boxShadow = '';
