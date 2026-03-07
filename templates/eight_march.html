@@ -120,8 +120,7 @@
     </div>
   </div>
 
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     // ===== ПЕРЕМЕННЫЕ =====
 let selectedEmoji = [];
@@ -258,95 +257,74 @@ document.getElementById('inp-to').addEventListener('input', updateCard);
 document.getElementById('inp-from').addEventListener('input', updateCard);
 document.getElementById('inp-msg').addEventListener('input', updateCard);
 
-// ===== РЕНДЕР ОТКРЫТКИ С КОРРЕКТНОЙ РАБОТОЙ НА HTTPS =====
-async function renderCard() {
-  const card = document.getElementById('card-preview');
+  // ===== РЕНДЕР КАРТИНКИ ЧЕРЕЗ CANVAS =====
+  async function renderCardCanvas() {
+    const card = document.getElementById('card-preview');
 
-  // Убираем тень и скругление на время рендера
-  const origBoxShadow = card.style.boxShadow;
-  const origBorderRadius = card.style.borderRadius;
-  card.style.boxShadow = 'none';
-  card.style.borderRadius = '0';
-
-  try {
-    const width = card.offsetWidth;
-    const height = card.offsetHeight;
-
-    // Генерируем картинку через dom-to-image
-    const dataUrl = await domtoimage.toPng(card, {
-      width: width,
-      height: height,
-      bgcolor: window.getComputedStyle(card).backgroundColor || null,
-      style: {
-        'transform': 'scale(1)',
-        'transform-origin': 'top left',
-      },
-      filter: (node) => true, // рендерим все элементы
-      cacheBust: true,        // принудительно обновляем ресурсы
-      useCORS: true,          // для HTTPS и внешних ресурсов
+    // Рендерим canvas с масштабом 2 для лучшего качества
+    const canvas = await html2canvas(card, {
+      backgroundColor: null,  // прозрачный фон, если нужен
+      scale: 2,
+      useCORS: true,           // для внешних ресурсов и HTTPS
+      logging: false,
     });
 
-    return dataUrl;
-  } finally {
-    // Восстанавливаем стили
-    card.style.boxShadow = origBoxShadow;
-    card.style.borderRadius = origBorderRadius;
+    return canvas.toDataURL('image/png');
   }
-}
 
-// ===== СОХРАНИТЬ КАРТИНКУ =====
-document.getElementById('btn-save').addEventListener('click', async () => {
-  try {
-    const dataUrl = await renderCard();
-    const link = document.createElement('a');
-    link.download = '8march.png';
-    link.href = dataUrl;
+  // ===== СОХРАНЕНИЕ КАРТИНКИ =====
+  document.getElementById('btn-save').addEventListener('click', async () => {
+    try {
+      const dataUrl = await renderCardCanvas();
+      const link = document.createElement('a');
+      link.download = '8march.png';
+      link.href = dataUrl;
 
-    // Для iPad и Safari нужно триггерить событие click через MouseEvent
-    const event = new MouseEvent('click');
-    link.dispatchEvent(event);
+      // Для совместимости с Safari/iPad
+      link.dispatchEvent(new MouseEvent('click'));
+    } catch (e) {
+      console.error(e);
+      alert('Не удалось сохранить. Попробуй ещё раз.');
+    }
+  });
 
-  } catch (e) {
-    console.error(e);
-    alert('Не удалось сохранить. Попробуй ещё раз.');
-  }
-});
+  // ===== ПОДЕЛИТЬСЯ КАРТИНКОЙ =====
+  document.getElementById('btn-share').addEventListener('click', async () => {
+    try {
+      const dataUrl = await renderCardCanvas();
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], '8march.png', { type: 'image/png' });
 
-// ===== ПОДЕЛИТЬСЯ КАРТИНКОЙ =====
-document.getElementById('btn-share').addEventListener('click', async () => {
-  try {
-    const dataUrl = await renderCard();
-    const blob = await (await fetch(dataUrl)).blob();
-    const file = new File([blob], '8march.png', { type: 'image/png' });
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: 'С 8 Марта!',
-        files: [file],
-      });
-    } else {
-      if (navigator.clipboard && window.ClipboardItem) {
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
-        ]);
-        alert('Скопировано! Вставь в Telegram через Ctrl+V');
+      if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
+        // Используем Web Share API для мобильных
+        await navigator.share({
+          title: 'С 8 Марта!',
+          files: [file],
+        });
       } else {
-        const link = document.createElement('a');
-        link.download = '8march.png';
-        link.href = dataUrl;
-        link.dispatchEvent(new MouseEvent('click'));
+        // fallback: копирование в буфер или скачивание
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          alert('Скопировано! Вставь в Telegram через Ctrl+V');
+        } else {
+          const link = document.createElement('a');
+          link.download = '8march.png';
+          link.href = dataUrl;
+          link.dispatchEvent(new MouseEvent('click'));
+        }
+      }
+
+    } catch (e) {
+      console.error(e);
+      if (e.name !== 'AbortError') {
+        alert('Что-то пошло не так. Попробуй кнопку Сохранить.');
       }
     }
-
-  } catch (e) {
-    if (e.name !== 'AbortError') {
-      console.error(e);
-      alert('Что-то пошло не так. Попробуй кнопку Сохранить.');
-    }
-  }
-});
+  });
 
 // ===== СТАРТ =====
 // Применяем дефолтный шаблон когда страница загрузилась
