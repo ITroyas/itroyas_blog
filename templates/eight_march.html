@@ -261,26 +261,26 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  const page = document.querySelector('.page');
+  const colPreview = document.querySelector('.col-preview');
 
-  // Прячем всё кроме открытки
-  page.style.display = 'block';
+  // Убираем sticky перед рендером
+  colPreview.style.position = 'static';
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
-  card.style.margin = '0';
 
   const canvas = await html2canvas(card, {
     scale: 2,
     useCORS: true,
     backgroundColor: null,
     logging: false,
+    scrollX: 0,
+    scrollY: 0,
   });
 
-  // Возвращаем всё обратно
-  page.style.display = '';
+  // Возвращаем sticky обратно
+  colPreview.style.position = '';
   card.style.boxShadow = '';
   card.style.borderRadius = '';
-  card.style.margin = '';
 
   return canvas;
 }
