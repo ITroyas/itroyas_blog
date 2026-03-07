@@ -120,7 +120,8 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
   <script>
     // ===== ПЕРЕМЕННЫЕ =====
 let selectedEmoji = [];
@@ -260,85 +261,85 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
   // ===== РЕНДЕР КАРТИНКИ ЧЕРЕЗ CANVAS =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  const rect = card.getBoundingClientRect();
 
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
 
-  const canvas = await html2canvas(card, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: null,
-    logging: false,
-    x: 0,
-    y: 0,
-    scrollX: 0,
-    scrollY: 0,
-    width: rect.width,
-    height: rect.height,
-    windowWidth: document.documentElement.scrollWidth,
-    windowHeight: document.documentElement.scrollHeight,
+  const blob = await domtoimage.toBlob(card, {
+    width: card.offsetWidth,
+    height: card.offsetHeight,
+    quality: 1,
   });
 
   card.style.boxShadow = '';
   card.style.borderRadius = '';
 
-  return canvas;
+  // Возвращаем объект с blob и методом toDataURL
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+
+  return new Promise((resolve) => {
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = card.offsetWidth;
+      canvas.height = card.offsetHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      resolve(canvas);
+    };
+    img.src = url;
+  });
 }
 
-  // ===== СОХРАНЕНИЕ КАРТИНКИ =====
-  document.getElementById('btn-save').addEventListener('click', async () => {
-    try {
-      const dataUrl = await renderCardCanvas();
-      const link = document.createElement('a');
-      link.download = '8march.png';
-      link.href = dataUrl;
+  // ===== СОХРАНИТЬ =====
+document.getElementById('btn-save').addEventListener('click', async () => {
+  try {
+    const canvas = await renderCard();
+    const link = document.createElement('a');
+    link.download = '8march.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch (e) {
+    alert('Не удалось сохранить. Попробуй ещё раз.');
+  }
+});
 
-      // Для совместимости с Safari/iPad
-      link.dispatchEvent(new MouseEvent('click'));
-    } catch (e) {
-      console.error(e);
-      alert('Не удалось сохранить. Попробуй ещё раз.');
-    }
-  });
-
-  // ===== ПОДЕЛИТЬСЯ КАРТИНКОЙ =====
-  document.getElementById('btn-share').addEventListener('click', async () => {
-    try {
-      const dataUrl = await renderCardCanvas();
-      const blob = await (await fetch(dataUrl)).blob();
+// ===== ПОДЕЛИТЬСЯ =====
+document.getElementById('btn-share').addEventListener('click', async () => {
+  try {
+    const canvas = await renderCard();
+    canvas.toBlob(async (blob) => {
       const file = new File([blob], '8march.png', { type: 'image/png' });
-
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
-        // Используем Web Share API для мобильных
         await navigator.share({
           title: 'С 8 Марта!',
           files: [file],
         });
       } else {
-        // fallback: копирование в буфер или скачивание
         if (navigator.clipboard && window.ClipboardItem) {
           await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
           ]);
-          alert('Скопировано! Вставь в Telegram через Ctrl+V');
+          alert('Скопировано! Вставь картинку в Telegram или любой мессенджер через Ctrl+V');
         } else {
           const link = document.createElement('a');
           link.download = '8march.png';
-          link.href = dataUrl;
-          link.dispatchEvent(new MouseEvent('click'));
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          alert('Картинка сохранена — отправь её вручную в мессенджере');
         }
       }
+    }, 'image/png');
 
-    } catch (e) {
-      console.error(e);
-      if (e.name !== 'AbortError') {
-        alert('Что-то пошло не так. Попробуй кнопку Сохранить.');
-      }
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      alert('Что-то пошло не так. Попробуй кнопку Сохранить.');
     }
-  });
+  }
+});
 
 // ===== СТАРТ =====
 // Применяем дефолтный шаблон когда страница загрузилась
