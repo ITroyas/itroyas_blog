@@ -261,10 +261,8 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  const colPreview = document.querySelector('.col-preview');
+  const rect = card.getBoundingClientRect();
 
-  // Убираем sticky перед рендером
-  colPreview.style.position = 'static';
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
 
@@ -273,12 +271,20 @@ async function renderCard() {
     useCORS: true,
     backgroundColor: null,
     logging: false,
-    scrollX: 0,
-    scrollY: 0,
+    onclone: (clonedDoc) => {
+      const clonedCard = clonedDoc.getElementById('card-preview');
+      clonedCard.style.margin = '0';
+      clonedCard.style.borderRadius = '0';
+      clonedCard.style.boxShadow = 'none';
+      clonedCard.style.transform = 'none';
+      clonedCard.style.position = 'absolute';
+      clonedCard.style.top = '0';
+      clonedCard.style.left = '0';
+      clonedCard.style.width = rect.width + 'px';
+      clonedCard.style.height = rect.height + 'px';
+    }
   });
 
-  // Возвращаем sticky обратно
-  colPreview.style.position = '';
   card.style.boxShadow = '';
   card.style.borderRadius = '';
 
