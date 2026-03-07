@@ -260,17 +260,27 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
+  const rect = card.getBoundingClientRect();
 
-  window.scrollTo(0, 0);
-  await new Promise(r => setTimeout(r, 100));
-  const canvas = await html2canvas(card, {
+  card.style.boxShadow = 'none';
+  card.style.borderRadius = '0';
+
+  const fullCanvas = await html2canvas(document.body, {
     scale: 2,
     useCORS: true,
     backgroundColor: null,
+    x: rect.left + window.scrollX,
+    y: rect.top + window.scrollY,
+    width: rect.width,
+    height: rect.height,
+    scrollX: -window.scrollX,
     scrollY: -window.scrollY,
   });
 
-  return canvas;
+  card.style.boxShadow = '';
+  card.style.borderRadius = '';
+
+  return fullCanvas;
 }
 
 // ===== СОХРАНИТЬ =====
@@ -295,7 +305,6 @@ document.getElementById('btn-share').addEventListener('click', async () => {
       scale: 2,
       useCORS: true,
       backgroundColor: null,
-      scrollY: -window.scrollY,
     });
 
     canvas.toBlob(async (blob) => {
@@ -303,17 +312,21 @@ document.getElementById('btn-share').addEventListener('click', async () => {
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
+        // МОБИЛКА — нативное меню "Поделиться"
         await navigator.share({
           title: 'С 8 Марта!',
           files: [file],
         });
+
       } else {
+        // ПК — копируем в буфер обмена
         if (navigator.clipboard && window.ClipboardItem) {
           await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
           ]);
           alert('Скопировано! Вставь картинку в Telegram или любой мессенджер через Ctrl+V');
         } else {
+          // Совсем старый браузер — просто скачиваем
           const link = document.createElement('a');
           link.download = '8march.png';
           link.href = URL.createObjectURL(blob);
@@ -321,6 +334,7 @@ document.getElementById('btn-share').addEventListener('click', async () => {
           alert('Картинка сохранена — отправь её вручную в мессенджере');
         }
       }
+
     }, 'image/png');
 
   } catch (e) {
