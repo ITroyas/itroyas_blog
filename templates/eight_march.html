@@ -303,45 +303,46 @@ async function renderCard() {
   return canvas;
 }
 
+// ===== СОХРАНИТЬ =====
+document.getElementById('btn-save').addEventListener('click', async () => {
+  try {
+    const canvas = await renderCard();
+    const link = document.createElement('a');
+    link.download = '8march.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch (e) {
+    alert('Не удалось сохранить. Попробуй ещё раз.');
+  }
+});
+
 // ===== ПОДЕЛИТЬСЯ =====
 document.getElementById('btn-share').addEventListener('click', async () => {
-  const card = document.getElementById('card-preview');
-
   try {
-    const canvas = await html2canvas(card, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: null,
-    });
+    const canvas = await renderCard();
 
     canvas.toBlob(async (blob) => {
       const file = new File([blob], '8march.png', { type: 'image/png' });
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
-        // МОБИЛКА — нативное меню "Поделиться"
         await navigator.share({
           title: 'С 8 Марта!',
           files: [file],
         });
-
       } else {
-        // ПК — копируем в буфер обмена
         if (navigator.clipboard && window.ClipboardItem) {
           await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
           ]);
-          alert('Скопировано! Вставь картинку в Telegram или любой мессенджер через Ctrl+V');
+          alert('Скопировано! Вставь картинку через Ctrl+V');
         } else {
-          // Совсем старый браузер — просто скачиваем
           const link = document.createElement('a');
           link.download = '8march.png';
           link.href = URL.createObjectURL(blob);
           link.click();
-          alert('Картинка сохранена — отправь её вручную в мессенджере');
         }
       }
-
     }, 'image/png');
 
   } catch (e) {
