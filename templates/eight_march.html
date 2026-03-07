@@ -261,9 +261,16 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  console.log('card size:', card.offsetWidth, card.offsetHeight);
-  console.log('card rect:', card.getBoundingClientRect());
-  console.log('scroll:', window.scrollX, window.scrollY);
+
+  // Запоминаем позицию скролла
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+
+  // Скроллим к карточке
+  card.scrollIntoView({ block: 'start' });
+  
+  // Небольшая пауза чтобы скролл успел отработать
+  await new Promise(resolve => setTimeout(resolve, 100));
 
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
@@ -272,10 +279,16 @@ async function renderCard() {
     scale: 2,
     useCORS: true,
     backgroundColor: null,
+    logging: false,
+    scrollX: 0,
+    scrollY: 0,
   });
 
   card.style.boxShadow = '';
   card.style.borderRadius = '';
+
+  // Возвращаем скролл обратно
+  window.scrollTo(scrollX, scrollY);
 
   return canvas;
 }
