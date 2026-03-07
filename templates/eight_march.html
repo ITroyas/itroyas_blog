@@ -261,6 +261,9 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
+  console.log('card size:', card.offsetWidth, card.offsetHeight);
+  console.log('card rect:', card.getBoundingClientRect());
+  console.log('scroll:', window.scrollX, window.scrollY);
 
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
