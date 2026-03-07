@@ -258,44 +258,67 @@ document.getElementById('inp-to').addEventListener('input', updateCard);
 document.getElementById('inp-from').addEventListener('input', updateCard);
 document.getElementById('inp-msg').addEventListener('input', updateCard);
 
-// ===== РЕНДЕР ОТКРЫТКИ =====
+// ===== РЕНДЕР ОТКРЫТКИ С КОРРЕКТНОЙ РАБОТОЙ НА HTTPS =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
-  
+
+  // Убираем тень и скругление на время рендера
+  const origBoxShadow = card.style.boxShadow;
+  const origBorderRadius = card.style.borderRadius;
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
 
-  const dataUrl = await domtoimage.toPng(card, {
-    width: card.offsetWidth,
-    height: card.offsetHeight,
-  });
+  try {
+    const width = card.offsetWidth;
+    const height = card.offsetHeight;
 
-  card.style.boxShadow = '';
-  card.style.borderRadius = '';
+    // Генерируем картинку через dom-to-image
+    const dataUrl = await domtoimage.toPng(card, {
+      width: width,
+      height: height,
+      bgcolor: window.getComputedStyle(card).backgroundColor || null,
+      style: {
+        'transform': 'scale(1)',
+        'transform-origin': 'top left',
+      },
+      filter: (node) => true, // рендерим все элементы
+      cacheBust: true,        // принудительно обновляем ресурсы
+      useCORS: true,          // для HTTPS и внешних ресурсов
+    });
 
-  return dataUrl;
+    return dataUrl;
+  } finally {
+    // Восстанавливаем стили
+    card.style.boxShadow = origBoxShadow;
+    card.style.borderRadius = origBorderRadius;
+  }
 }
 
-// ===== СОХРАНИТЬ =====
+// ===== СОХРАНИТЬ КАРТИНКУ =====
 document.getElementById('btn-save').addEventListener('click', async () => {
   try {
     const dataUrl = await renderCard();
     const link = document.createElement('a');
     link.download = '8march.png';
     link.href = dataUrl;
-    link.click();
+
+    // Для iPad и Safari нужно триггерить событие click через MouseEvent
+    const event = new MouseEvent('click');
+    link.dispatchEvent(event);
+
   } catch (e) {
+    console.error(e);
     alert('Не удалось сохранить. Попробуй ещё раз.');
   }
 });
 
-// ===== ПОДЕЛИТЬСЯ =====
+// ===== ПОДЕЛИТЬСЯ КАРТИНКОЙ =====
 document.getElementById('btn-share').addEventListener('click', async () => {
   try {
     const dataUrl = await renderCard();
-
     const blob = await (await fetch(dataUrl)).blob();
     const file = new File([blob], '8march.png', { type: 'image/png' });
+
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     if (isMobile && navigator.share && navigator.canShare({ files: [file] })) {
@@ -313,12 +336,13 @@ document.getElementById('btn-share').addEventListener('click', async () => {
         const link = document.createElement('a');
         link.download = '8march.png';
         link.href = dataUrl;
-        link.click();
+        link.dispatchEvent(new MouseEvent('click'));
       }
     }
 
   } catch (e) {
     if (e.name !== 'AbortError') {
+      console.error(e);
       alert('Что-то пошло не так. Попробуй кнопку Сохранить.');
     }
   }
