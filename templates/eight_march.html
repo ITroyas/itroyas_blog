@@ -258,19 +258,36 @@ document.getElementById('inp-from').addEventListener('input', updateCard);
 document.getElementById('inp-msg').addEventListener('input', updateCard);
 
   // ===== РЕНДЕР КАРТИНКИ ЧЕРЕЗ CANVAS =====
-  async function renderCardCanvas() {
-    const card = document.getElementById('card-preview');
+async function renderCardCanvas() {
+  const card = document.getElementById('card-preview');
 
-    // Рендерим canvas с масштабом 2 для лучшего качества
-    const canvas = await html2canvas(card, {
-      backgroundColor: null,  // прозрачный фон, если нужен
-      scale: 2,
-      useCORS: true,           // для внешних ресурсов и HTTPS
-      logging: false,
-    });
+  const canvas = await html2canvas(card, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true,
+    logging: false,
+    onclone: (clonedDoc) => {
+      const clonedBody = clonedDoc.body;
+      const clonedCard = clonedDoc.getElementById('card-preview');
 
-    return canvas.toDataURL('image/png');
-  }
+      // Убираем всё лишнее — оставляем только карточку
+      clonedBody.style.background = 'transparent';
+      clonedBody.style.padding = '0';
+      clonedBody.style.margin = '0';
+      clonedBody.style.display = 'block';
+
+      clonedCard.style.position = 'static';
+      clonedCard.style.margin = '0';
+      clonedCard.style.boxShadow = 'none';
+      clonedCard.style.borderRadius = '0';
+      clonedCard.style.border = 'none';
+      clonedCard.style.width = card.offsetWidth + 'px';
+      clonedCard.style.height = card.offsetHeight + 'px';
+    }
+  });
+
+  return canvas.toDataURL('image/png');
+}
 
   // ===== СОХРАНЕНИЕ КАРТИНКИ =====
   document.getElementById('btn-save').addEventListener('click', async () => {
