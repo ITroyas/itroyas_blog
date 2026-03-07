@@ -261,13 +261,13 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 // ===== РЕНДЕР ОТКРЫТКИ =====
 async function renderCard() {
   const card = document.getElementById('card-preview');
+  const page = document.querySelector('.page');
 
+  // Прячем всё кроме открытки
+  page.style.display = 'block';
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
-
-  // Скроллим к карточке
-  card.scrollIntoView();
-  await new Promise(r => setTimeout(r, 100));
+  card.style.margin = '0';
 
   const canvas = await html2canvas(card, {
     scale: 2,
@@ -276,8 +276,11 @@ async function renderCard() {
     logging: false,
   });
 
+  // Возвращаем всё обратно
+  page.style.display = '';
   card.style.boxShadow = '';
   card.style.borderRadius = '';
+  card.style.margin = '';
 
   return canvas;
 }
