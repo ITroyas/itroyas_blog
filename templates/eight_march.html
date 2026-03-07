@@ -261,31 +261,28 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 async function renderCard() {
   const card = document.getElementById('card-preview');
 
+  // Скроллим к карточке
+  card.scrollIntoView({ behavior: 'instant', block: 'start' });
+  
+  // Ждём чтобы скролл завершился
+  await new Promise(r => setTimeout(r, 100));
+
   card.style.boxShadow = 'none';
   card.style.borderRadius = '0';
 
-  const clone = card.cloneNode(true);
-  clone.style.position = 'fixed';
-  clone.style.top = '0';
-  clone.style.left = '0';
-  clone.style.width = card.offsetWidth + 'px';
-  clone.style.height = card.offsetHeight + 'px';
-  clone.style.zIndex = '-9999';
-  clone.style.opacity = '0';
-  document.body.appendChild(clone);
-
-  const canvas = await html2canvas(clone, {
+  const canvas = await html2canvas(card, {
     scale: 2,
     useCORS: true,
     allowTaint: false,
     backgroundColor: null,
-    width: card.offsetWidth,
-    height: card.offsetHeight,
-    x: 0,
-    y: 0,
+    logging: true, // включи чтобы видеть ошибки в консоли
+    onclone: (doc) => {
+      // Убеждаемся что клон тоже получил нужные стили
+      const clonedCard = doc.getElementById('card-preview');
+      clonedCard.style.background = card.style.background;
+    }
   });
 
-  document.body.removeChild(clone);
   card.style.boxShadow = '';
   card.style.borderRadius = '';
 
