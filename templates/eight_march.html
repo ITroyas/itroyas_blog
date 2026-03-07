@@ -269,14 +269,16 @@ async function renderCard() {
     useCORS: true,
     backgroundColor: null,
     logging: false,
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: card.scrollWidth,
+    windowHeight: card.scrollHeight,
     onclone: (clonedDoc) => {
       const clonedCard = clonedDoc.getElementById('card-preview');
-      clonedCard.style.position = 'fixed';
-      clonedCard.style.top = '0';
-      clonedCard.style.left = '0';
       clonedCard.style.margin = '0';
       clonedCard.style.borderRadius = '0';
       clonedCard.style.boxShadow = 'none';
+      clonedCard.style.transform = 'none';
       clonedCard.style.width = card.offsetWidth + 'px';
       clonedCard.style.height = card.offsetHeight + 'px';
     }
