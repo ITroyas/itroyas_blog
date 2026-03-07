@@ -261,6 +261,8 @@ document.getElementById('inp-msg').addEventListener('input', updateCard);
 async function renderCard() {
   const card = document.getElementById('card-preview');
 
+  window.scrollTo(0, 0);
+  await new Promise(r => setTimeout(r, 100));
   const canvas = await html2canvas(card, {
     scale: 2,
     useCORS: true,
